@@ -1,0 +1,3 @@
+- fixed after leafnode, also it is distributable (as long as for free and not modified sources)
+- available on amd64 now too, support php from 4.0.6 to 5.0.0 not only 5.0.0
+- will STBR to ac later this evening
