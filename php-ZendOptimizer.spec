@@ -4,8 +4,8 @@
 %define		no_install_post_strip		1
 %define		no_install_post_compress_docs	1
 %define		no_install_post_chrpath		1
-Summary:	Zend Optimizer - PHP4 code optimizer
-Summary(pl):	Zend Optimizer - optymalizator kodu PHP4
+Summary:	Zend Optimizer - PHP code optimizer
+Summary(pl):	Zend Optimizer - optymalizator kodu PHP
 Name:		ZendOptimizer
 Version:	2.5.7
 Release:	0.6
