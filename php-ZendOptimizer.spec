@@ -73,7 +73,7 @@ install 4_3_x_comp/TS/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimi
 install 5_0_x_comp/TS/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-5.0.x
 
 ln -s /etc/php $RPM_BUILD_ROOT%{_libdir}/Zend/etc
-ln -s %{_bindir} $RPM_BUILD_ROOT%{_libdir}/Zend//bin
+ln -s %{_bindir} $RPM_BUILD_ROOT%{_libdir}/Zend/bin
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -134,7 +134,7 @@ if [ -f /var/lock/subsys/httpd ]; then
 	/etc/rc.d/init.d/httpd restart 1>&2
 fi
 
-echo "Remember: Read the /usr/share/doc/ZendOptimizer-%{version}/LICENSE !"
+echo "Remember: Read the %{_docdir}/ZendOptimizer-%{version}/LICENSE !"
 
 %files
 %defattr(644,root,root,755)
