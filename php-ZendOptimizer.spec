@@ -1,32 +1,31 @@
-%define _srcname ZendOptimizer-Beta4-Linux-glibc2.1
-Summary:	Zend Optimizer - php4 code optimizer
-Summary(pl):	Zend Optimizer - optymalizator kodu php4
+Summary:	Zend Optimizer - php code optimizer
+Summary(pl):	Zend Optimizer - optymalizator kodu php
 Name:		ZendOptimizer
-Version:	0.98beta4
+Version:	2.5.3
 Release:	1
 License:	Trial, not distributable
 Group:		Libraries
-Source0:	%{_srcname}.tar.gz
+Source0:	%{name}-%{version}-linux-glibc21-i386.tar.gz
 NoSource:	0
 URL:		http://www.zend.com/zend/optimizer.php
-Requires:	php >= 4.0.0
+Requires:	php >= 5.0.0
 ExclusiveArch:	%{ix86}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-Zend Optimizer - php4 code optimizer.
+Zend Optimizer - php code optimizer.
 
 %description -l pl
-Zend Optimizer - optymalizator kodu php4.
+Zend Optimizer - optymalizator kodu php.
 
 %prep
-%setup -q -n %{_srcname}
+%setup -q -n %{name}-%{version}-linux-glibc21-i386
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_libdir}/apache/php
 
-install ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/apache/php
+install data/5_0_0_comp/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/apache/php
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -55,5 +54,5 @@ echo "Remember:Read the /usr/share/doc/ZendOptimizer-%{version}/LICENSE.gz!"
 
 %files
 %defattr(644,root,root,755)
-%doc FAQ.txt LICENSE acceleratedbyoptimizer.gif
+%doc data/doc/* data/poweredbyoptimizer.gif
 %attr(755,root,root) %{_libdir}/apache/php/ZendOptimizer.so
