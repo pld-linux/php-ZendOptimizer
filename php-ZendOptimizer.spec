@@ -5,6 +5,9 @@ Name:		ZendOptimizer
 Version:	0.98beta4
 Release:	1
 Group:		Libraries
+Group(de):	Libraries
+Group(es):	Bibliotecas
+Group(fr):	Librairies
 Group(pl):	Biblioteki
 Copyright:	Trial
 Source0:	%{_srcname}.tar.gz
