@@ -43,7 +43,7 @@ Zend Optimizer - optymalizator kodu PHP.
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_libdir}/Zend/lib/Optimizer{,_TS}-%{version},%{_bindir},/etc/php,}
-install -d  $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer-%{version}/php-{4.0.6,4.1.x,4.2.0,4.2.x,4.3.x,5.0.0}
+install -d $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer-%{version}/php-{4.0.6,4.1.x,4.2.0,4.2.x,4.3.x,5.0.0}
 install -d $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-{4.2.x,4.3.x,5.0.0}
 
 %ifarch %{ix86}
@@ -51,7 +51,7 @@ cd %{name}-%{version}-linux-glibc21-i386
 %endif
 
 %ifarch amd64
-cd  %{name}-%{version}-linux-glibc23-amd64
+cd %{name}-%{version}-linux-glibc23-amd64
 %endif
 
 echo "zend_optimizer.version=%{version}" > $RPM_BUILD_ROOT%{_sysconfdir}/php/pack.ini
@@ -72,7 +72,7 @@ install 4_2_x_comp/TS/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimi
 install 4_3_x_comp/TS/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-4.3.x
 install 5_0_0_comp/TS/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-5.0.0
 
-ln -s /etc/php  $RPM_BUILD_ROOT%{_libdir}/Zend/etc
+ln -s /etc/php $RPM_BUILD_ROOT%{_libdir}/Zend/etc
 ln -s %{_bindir} $RPM_BUILD_ROOT%{_libdir}/Zend//bin
 
 %clean
@@ -83,7 +83,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %preun
 if [ -f /etc/php/php.ini ]; then
-        echo "deactivating module 'ZendOptimizer.so' in php.ini" 1>&2
+	echo "deactivating module 'ZendOptimizer.so' in php.ini" 1>&2
 #perl -pi -e 's|^zend_optimizer.optimization_level|;zend_optimizer.optimization_level|g' \
 #	/etc/php/php.ini
 	grep -v '\[Zend\]' /etc/php/php.ini |\
@@ -97,17 +97,17 @@ fi
 %post
 if [ -f /etc/php/php.ini ]; then
 	echo "activating module 'ZendOptimizer.so' in php.ini" 1>&2
-	if grep -q ^zend_optimizer.optimization_level  ; then
+	if grep -q ^zend_optimizer.optimization_level ; then
 	optlevel=`grep ^zend_optimizer /etc/php/php.ini|cut -d'=' -f2|tr -d ' '|tr -d '"'|tr -d "'"|tr -d ';'`
 	else
 	optlevel="15"
 	fi
 	cp /etc/php/php.ini{,.zend-backup}
 	grep -v zend_optimizer.optimization_level /etc/php/php.ini | \
-	grep -v zend_extension  > /etc/php/php.ini.tmp
+	grep -v zend_extension > /etc/php/php.ini.tmp
 	echo '[Zend]' >> /etc/php/php.ini.tmp
 	echo "zend_optimizer.optimization_level=$optlevel" >> /etc/php/php.ini.tmp
-	echo "zend_extension_manager.optimizer=%{_libdir}/Zend/lib/Optimizer-%{version}"  >> /etc/php/php.ini.tmp
+	echo "zend_extension_manager.optimizer=%{_libdir}/Zend/lib/Optimizer-%{version}" >> /etc/php/php.ini.tmp
 	echo "zend_extension_manager.optimizer_ts=%{_libdir}/Zend/lib/Optimizer_TS-%{version}" >> /etc/php/php.ini.tmp
 	echo "zend_extension=%{_libdir}/Zend/lib/ZendExtensionManager.so" >> /etc/php/php.ini.tmp
 	echo "zend_extension_ts=%{_libdir}/Zend/lib/ZendExtensionManager_TS.so" >> /etc/php/php.ini.tmp
