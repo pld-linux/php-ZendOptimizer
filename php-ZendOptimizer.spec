@@ -7,6 +7,7 @@ Release:	1
 License:	Trial, not distributable
 Group:		Libraries
 Source0:	%{_srcname}.tar.gz
+NoSource:	0
 URL:		http://www.zend.com/zend/optimizer.php
 Requires:	php >= 4.0.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
