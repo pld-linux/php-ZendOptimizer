@@ -4,22 +4,25 @@ Summary(pl):	Zend Optimizer - optymalizator kodu php4
 Name:		ZendOptimizer
 Version:	0.98beta4
 Release:	1
+License:	Trial
 Group:		Libraries
 Group(de):	Libraries
 Group(es):	Bibliotecas
 Group(fr):	Librairies
 Group(pl):	Biblioteki
-Copyright:	Trial
+Group(pt_BR):	Bibliotecas
+Group(ru):	Библиотеки
+Group(uk):	Б╕бл╕отеки
 Source0:	%{_srcname}.tar.gz
 URL:		http://www.zend.com/zend/optimizer.php
 Requires:	php >= 4.0.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-Zend Optimizer - php4 code optimizer
+Zend Optimizer - php4 code optimizer.
 
 %description -l pl
-Zend Optimizer - optymalizator kodu php4
+Zend Optimizer - optymalizator kodu php4.
 
 %prep
 %setup -q -n %{_srcname}
@@ -30,6 +33,9 @@ install -d $RPM_BUILD_ROOT/%{_libdir}/apache/php/
 install ZendOptimizer.so $RPM_BUILD_ROOT/%{_libdir}/apache/php/
 
 gzip -9nf FAQ.txt LICENSE
+
+%clean
+rm -rf $RPM_BUILD_ROOT
 
 %preun
 if [ -f /etc/httpd/php.ini ]; then
@@ -53,9 +59,6 @@ if [ -f /var/lock/subsys/httpd ]; then
         /etc/rc.d/init.d/httpd restart 1>&2
 fi
 echo "Remember:Read the /usr/share/doc/ZendOptimizer-%{version}/LICENSE.gz!"
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
