@@ -6,13 +6,6 @@ Version:	0.98beta4
 Release:	1
 License:	Trial
 Group:		Libraries
-Group(de):	Libraries
-Group(es):	Bibliotecas
-Group(fr):	Librairies
-Group(pl):	Biblioteki
-Group(pt_BR):	Bibliotecas
-Group(ru):	Библиотеки
-Group(uk):	Б╕бл╕отеки
 Source0:	%{_srcname}.tar.gz
 URL:		http://www.zend.com/zend/optimizer.php
 Requires:	php >= 4.0.0
