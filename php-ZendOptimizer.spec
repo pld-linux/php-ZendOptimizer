@@ -4,8 +4,8 @@
 %define		no_install_post_strip		1
 %define		no_install_post_compress_docs	1
 %define		no_install_post_chrpath		1
-Summary:	Zend Optimizer - php4 code optimizer
-Summary(pl):	Zend Optimizer - optymalizator kodu php4
+Summary:	Zend Optimizer - PHP4 code optimizer
+Summary(pl):	Zend Optimizer - optymalizator kodu PHP4
 Name:		ZendOptimizer
 Version:	2.5.3
 Release:	1
@@ -25,10 +25,10 @@ ExclusiveArch:	%{ix86} amd64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-Zend Optimizer - php code optimizer.
+Zend Optimizer - PHP code optimizer.
 
 %description -l pl
-Zend Optimizer - optymalizator kodu php.
+Zend Optimizer - optymalizator kodu PHP.
 
 %prep
 %setup -q -c
