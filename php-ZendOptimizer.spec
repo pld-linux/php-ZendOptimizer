@@ -10,6 +10,7 @@ Source0:	%{_srcname}.tar.gz
 NoSource:	0
 URL:		http://www.zend.com/zend/optimizer.php
 Requires:	php >= 4.0.0
+ExclusiveArch:	%{ix86}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -23,8 +24,9 @@ Zend Optimizer - optymalizator kodu php4.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/%{_libdir}/apache/php/
-install ZendOptimizer.so $RPM_BUILD_ROOT/%{_libdir}/apache/php/
+install -d $RPM_BUILD_ROOT%{_libdir}/apache/php
+
+install ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/apache/php
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -55,4 +57,4 @@ echo "Remember:Read the /usr/share/doc/ZendOptimizer-%{version}/LICENSE.gz!"
 %files
 %defattr(644,root,root,755)
 %doc FAQ.txt LICENSE acceleratedbyoptimizer.gif
-%{_libdir}/apache/php/ZendOptimizer.so
+%attr(755,root,root) %{_libdir}/apache/php/ZendOptimizer.so
