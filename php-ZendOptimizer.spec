@@ -16,12 +16,13 @@ Source0:	%{name}-%{version}-linux-glibc21-i386.tar.gz
 Source1:	%{name}-%{version}-linux-glibc23-amd64.tar.gz
 # Source1-md5:	1c22955ad63d1c73f969ebd9c4899b7d
 URL:		http://www.zend.com/zend/optimizer.php
+BuildRequires:	rpmbuild(macros) >= 1.213
 Requires(post):	grep >= 2:2.5.1
 Requires(post):	sed >= 4.0.0
 #Requires(post):	/usr/bin/perl
 # php4 provides php with epoch 0 while php provides php with epoch 3, workaround
 Requires:	php >= 0:4.0.6
-ExclusiveArch:	%{ix86} amd64
+ExclusiveArch:	%{ix86} %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -36,7 +37,7 @@ Zend Optimizer - optymalizator kodu PHP.
 %ifarch %{ix86}
 %{__tar} xfz %{SOURCE0}
 %endif
-%ifarch amd64
+%ifarch %{x8664}
 %{__tar} xfz %{SOURCE1}
 %endif
 
@@ -50,7 +51,7 @@ install -d $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-{4.2.x
 cd %{name}-%{version}-linux-glibc21-i386
 %endif
 
-%ifarch amd64
+%ifarch %{x8664}
 cd %{name}-%{version}-linux-glibc23-amd64
 %endif
 
@@ -141,7 +142,7 @@ echo "Remember: Read the %{_docdir}/ZendOptimizer-%{version}/LICENSE !"
 %ifarch %{ix86}
 %doc %{name}-%{version}-linux-glibc21-i386/data/doc %{name}-%{version}-linux-glibc21-i386/LICENSE
 %endif
-%ifarch amd64
+%ifarch %{x8664}
 %doc %{name}-%{version}-linux-glibc23-amd64/data/doc %{name}-%{version}-linux-glibc23-amd64/LICENSE
 %endif
 %attr(755,root,root) %{_bindir}/zendid
