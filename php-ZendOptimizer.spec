@@ -8,7 +8,7 @@ Summary:	Zend Optimizer - PHP code optimizer
 Summary(pl):	Zend Optimizer - optymalizator kodu PHP
 Name:		ZendOptimizer
 Version:	2.5.7
-Release:	0.6
+Release:	0.7
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
 Group:		Libraries
 Source0:	%{name}-%{version}-linux-glibc21-i386.tar.gz
@@ -19,9 +19,7 @@ URL:		http://www.zend.com/zend/optimizer.php
 BuildRequires:	rpmbuild(macros) >= 1.213
 Requires(post):	grep >= 2:2.5.1
 Requires(post):	sed >= 4.0.0
-#Requires(post):	/usr/bin/perl
-# php4 provides php with epoch 0 while php provides php with epoch 3, workaround
-Requires:	php >= 0:4.0.6
+Requires:	ZendOptimizer(php)
 ExclusiveArch:	%{ix86} %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -30,6 +28,26 @@ Zend Optimizer - PHP code optimizer.
 
 %description -l pl
 Zend Optimizer - optymalizator kodu PHP.
+
+%package -n php4-%{name}
+Summary:	php4
+Group:		php4
+Requires:	php >= 3:4.0.6
+# php4 provides php with epoch 0 while php provides php with epoch 3, workaround
+Requires:	php >= 0:4.0.6
+Provides:	ZendOptimizer(php)
+Obsoletes:	ZendOptimizer(php)
+
+%description -n php4-%{name}
+
+%package -n php-%{name}
+Summary:	php
+Group:		php
+Requires:	php >= 3:5.0.0
+Provides:	ZendOptimizer(php)
+Obsoletes:	ZendOptimizer(php)
+
+%description -n php-%{name}
 
 %prep
 %setup -q -c
@@ -73,7 +91,7 @@ install 4_2_x_comp/TS/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimi
 install 4_3_x_comp/TS/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-4.3.x
 install 5_0_x_comp/TS/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-5.0.x
 
-ln -s /etc/php $RPM_BUILD_ROOT%{_libdir}/Zend/etc
+ln -s %{_sysconfdir}/php $RPM_BUILD_ROOT%{_libdir}/Zend/etc
 ln -s %{_bindir} $RPM_BUILD_ROOT%{_libdir}/Zend/bin
 
 %clean
@@ -149,7 +167,7 @@ echo "Remember: Read the %{_docdir}/ZendOptimizer-%{version}/LICENSE !"
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/php/pack.ini
 %{_sysconfdir}/php/poweredbyoptimizer.gif
 %dir %{_libdir}/Zend
-%dir %{_libdir}/Zend/lib/
+%dir %{_libdir}/Zend/lib
 %dir %{_libdir}/Zend/lib/Optimizer-%{version}/php-4.0.6
 %dir %{_libdir}/Zend/lib/Optimizer-%{version}/php-4.1.x
 %dir %{_libdir}/Zend/lib/Optimizer-%{version}/php-4.2.0
