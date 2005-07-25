@@ -7,14 +7,16 @@
 Summary:	Zend Optimizer - PHP code optimizer
 Summary(pl):	Zend Optimizer - optymalizator kodu PHP
 Name:		ZendOptimizer
-Version:	2.5.7
-Release:	0.6
+Version:	2.5.10a
+Release:	0.7
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
 Group:		Libraries
-Source0:	%{name}-%{version}-linux-glibc21-i386.tar.gz
-# Source0-md5:	441192fb05882126242657d180a4c96a
-Source1:	%{name}-%{version}-linux-glibc23-amd64.tar.gz
-# Source1-md5:	1c22955ad63d1c73f969ebd9c4899b7d
+Source0:	http://downloads.zend.com/optimizer/2.5.10/%{name}-%{version}-linux-glibc21-i386.tar.gz
+# Source0-md5:	3064cb6d33f0d4800cf84b8a5521cd48
+Source1:	http://downloads.zend.com/optimizer/2.5.10/%{name}-%{version}-linux-glibc23-x86_64.tar.gz
+# Source1-md5:	6d7e50b1875fb77eff7d0cc6ff45db32
+NoSource:	0
+NoSource:	1
 URL:		http://www.zend.com/zend/optimizer.php
 BuildRequires:	rpmbuild(macros) >= 1.213
 Requires(post):	grep >= 2:2.5.1
@@ -44,15 +46,15 @@ Zend Optimizer - optymalizator kodu PHP.
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_libdir}/Zend/lib/Optimizer{,_TS}-%{version},%{_bindir},/etc/php,}
-install -d $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer-%{version}/php-{4.0.6,4.1.x,4.2.0,4.2.x,4.3.x,5.0.x}
-install -d $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-{4.2.x,4.3.x,5.0.x}
+install -d $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer-%{version}/php-{4.0.6,4.1.x,4.2.0,4.2.x,4.3.x,4.4.x,5.0.x}
+install -d $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-{4.2.x,4.3.x,4.4.x,5.0.x}
 
 %ifarch %{ix86}
 cd %{name}-%{version}-linux-glibc21-i386
 %endif
 
 %ifarch %{x8664}
-cd %{name}-%{version}-linux-glibc23-amd64
+cd %{name}-%{version}-linux-glibc23-x86_64
 %endif
 
 echo "zend_optimizer.version=%{version}" > $RPM_BUILD_ROOT%{_sysconfdir}/php/pack.ini
@@ -67,10 +69,12 @@ install 4_1_x_comp/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer
 install 4_2_0_comp/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer-%{version}/php-4.2.0
 install 4_2_x_comp/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer-%{version}/php-4.2.x
 install 4_3_x_comp/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer-%{version}/php-4.3.x
+install 4_4_x_comp/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer-%{version}/php-4.4.x
 install 5_0_x_comp/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer-%{version}/php-5.0.x
 
 install 4_2_x_comp/TS/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-4.2.x
 install 4_3_x_comp/TS/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-4.3.x
+install 4_4_x_comp/TS/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-4.4.x
 install 5_0_x_comp/TS/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-5.0.x
 
 ln -s /etc/php $RPM_BUILD_ROOT%{_libdir}/Zend/etc
@@ -135,7 +139,7 @@ if [ -f /var/lock/subsys/httpd ]; then
 	/etc/rc.d/init.d/httpd restart 1>&2
 fi
 
-echo "Remember: Read the %{_docdir}/ZendOptimizer-%{version}/LICENSE !"
+echo "Remember: Read the %{_docdir}/ZendOptimizer-%{version}/LICENSE.gz !"
 
 %files
 %defattr(644,root,root,755)
@@ -143,7 +147,7 @@ echo "Remember: Read the %{_docdir}/ZendOptimizer-%{version}/LICENSE !"
 %doc %{name}-%{version}-linux-glibc21-i386/data/doc %{name}-%{version}-linux-glibc21-i386/LICENSE
 %endif
 %ifarch %{x8664}
-%doc %{name}-%{version}-linux-glibc23-amd64/data/doc %{name}-%{version}-linux-glibc23-amd64/LICENSE
+%doc %{name}-%{version}-linux-glibc23-x86_64/data/doc %{name}-%{version}-linux-glibc23-x86_64/LICENSE
 %endif
 %attr(755,root,root) %{_bindir}/zendid
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/php/pack.ini
@@ -155,11 +159,13 @@ echo "Remember: Read the %{_docdir}/ZendOptimizer-%{version}/LICENSE !"
 %dir %{_libdir}/Zend/lib/Optimizer-%{version}/php-4.2.0
 %dir %{_libdir}/Zend/lib/Optimizer-%{version}/php-4.2.x
 %dir %{_libdir}/Zend/lib/Optimizer-%{version}/php-4.3.x
+%dir %{_libdir}/Zend/lib/Optimizer-%{version}/php-4.4.x
 %dir %{_libdir}/Zend/lib/Optimizer-%{version}/php-5.0.x
 %dir %{_libdir}/Zend/lib/Optimizer-%{version}
 %dir %{_libdir}/Zend/lib/Optimizer_TS-%{version}
 %dir %{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-4.2.x
 %dir %{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-4.3.x
+%dir %{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-4.4.x
 %dir %{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-5.0.x
 %{_libdir}/Zend/bin
 %{_libdir}/Zend/etc
@@ -168,9 +174,11 @@ echo "Remember: Read the %{_docdir}/ZendOptimizer-%{version}/LICENSE !"
 %{_libdir}/Zend/lib/Optimizer-%{version}/php-4.2.0/ZendOptimizer.so
 %{_libdir}/Zend/lib/Optimizer-%{version}/php-4.2.x/ZendOptimizer.so
 %{_libdir}/Zend/lib/Optimizer-%{version}/php-4.3.x/ZendOptimizer.so
+%{_libdir}/Zend/lib/Optimizer-%{version}/php-4.4.x/ZendOptimizer.so
 %{_libdir}/Zend/lib/Optimizer-%{version}/php-5.0.x/ZendOptimizer.so
 %{_libdir}/Zend/lib/ZendExtensionManager.so
 %{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-4.2.x/ZendOptimizer.so
 %{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-4.3.x/ZendOptimizer.so
+%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-4.4.x/ZendOptimizer.so
 %{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-5.0.x/ZendOptimizer.so
 %{_libdir}/Zend/lib/ZendExtensionManager_TS.so
