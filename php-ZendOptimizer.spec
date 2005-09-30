@@ -8,7 +8,7 @@ Summary:	Zend Optimizer - PHP code optimizer
 Summary(pl):	Zend Optimizer - optymalizator kodu PHP
 Name:		ZendOptimizer
 Version:	2.5.10a
-Release:	0.9
+Release:	0.10
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
 Group:		Libraries
 Source0:	http://downloads.zend.com/optimizer/2.5.10/%{name}-%{version}-linux-glibc21-i386.tar.gz
@@ -43,6 +43,7 @@ Requires:	php >= 3:4.0.6
 Provides:	ZendOptimizer(php)
 
 %description -n php4-%{name}
+Zend Optimizer for PHP 4.x.
 
 %package -n php-%{name}
 Summary:	php
@@ -52,6 +53,7 @@ Requires:	php >= 3:5.0.0
 Provides:	ZendOptimizer(php)
 
 %description -n php-%{name}
+Zend Optimizer for PHP 5.x.
 
 %prep
 %setup -q -c
@@ -75,6 +77,7 @@ echo "zend_optimizer.version=%{version}" > $RPM_BUILD_ROOT/etc/php/pack.ini
 cd data
 install zendid $RPM_BUILD_ROOT%{_bindir}
 install poweredbyoptimizer.gif $RPM_BUILD_ROOT%{_sysconfdir}/php
+install poweredbyoptimizer.gif $RPM_BUILD_ROOT%{_sysconfdir}/php4
 install *.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib
 
 for a in *_comp; do
@@ -105,64 +108,32 @@ install zendoptimizer.ini $RPM_BUILD_ROOT%{_sysconfdir}/php/conf.d/%{name}.ini
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-# NOTE THIS MIGHT BE INSECURE WHEN SOMEONE IS USING COMMERCIAL ZEND PRODUCTS
-# THEN AGAIN HE/SHE SHOULD USE THEIR OPTIMIZER
-%preun
+%preun -n php4-%{name}
 if [ "$1" = "0" ]; then
-	umask 022
-	# just php5, php4 has confdir
-	for php in /etc/php/php.ini; do
-		if [ -f $php ]; then
-			echo "deactivating module 'ZendOptimizer.so' in $php" 1>&2
-			grep -v '\[Zend\]' $php |\
-			grep -v zend_extension |grep -v zend_optimizer > $php.tmp
-			mv $php.tmp $php
-		fi
-	done
-	# apache1
-	if [ -f /etc/apache/conf.d/??_mod_php4.conf ] && [ -f /var/lock/subsys/apache ]; then
-		/etc/rc.d/init.d/apache restart 1>&2
-	fi
-	# apache2
-	if [ -f /etc/httpd/httpd.conf/??_mod_php4.conf ] && [ -f /var/lock/subsys/httpd ]; then
-		/etc/rc.d/init.d/httpd restart 1>&2
-	fi
+	[ ! -f /etc/apache/conf.d/??_mod_php4.conf ] || %service -q apache restart
+	[ ! -f /etc/httpd/httpd.conf/??_mod_php4.conf ] || %service -q httpd restart
 fi
+
+%post -n php4-%{name}
+[ ! -f /etc/apache/conf.d/??_mod_php4.conf ] || %service -q apache restart
+[ ! -f /etc/httpd/httpd.conf/??_mod_php4.conf ] || %service -q httpd restart
+
+%preun -n php-%{name}
+if [ "$1" = "0" ]; then
+	[ ! -f /etc/apache/conf.d/??_mod_php.conf ] || %service -q apache restart
+	[ ! -f /etc/httpd/httpd.conf/??_mod_php.conf ] || %service -q httpd restart
+fi
+
+%post -n php-%{name}
+[ ! -f /etc/apache/conf.d/??_mod_php.conf ] || %service -q apache restart
+[ ! -f /etc/httpd/httpd.conf/??_mod_php.conf ] || %service -q httpd restart
 
 %post
-umask 022
-for php in /etc/php/php.ini; do
-	# just php5, php4 has confdir
-	if [ -f $php ]; then
-		echo "activating module 'ZendOptimizer.so' in $php" 1>&2
-		if grep -q ^zend_optimizer.optimization_level ; then
-			optlevel=`grep ^zend_optimizer $php|cut -d'=' -f2|tr -d ' '|tr -d '"'|tr -d "'"|tr -d ';'`
-		else
-			optlevel="15"
-		fi
-		cp $php{,.zend-backup}
-		grep -v zend_optimizer.optimization_level $php | \
-		grep -v zend_extension > $php.tmp
-		echo '[Zend]' >> $php.tmp
-		echo "zend_optimizer.optimization_level=$optlevel" >> $php.tmp
-		echo "zend_extension_manager.optimizer=%{_libdir}/Zend/lib/Optimizer-%{version}" >> $php.tmp
-		echo "zend_extension_manager.optimizer_ts=%{_libdir}/Zend/lib/Optimizer_TS-%{version}" >> $php.tmp
-		echo "zend_extension=%{_libdir}/Zend/lib/ZendExtensionManager.so" >> $php.tmp
-		echo "zend_extension_ts=%{_libdir}/Zend/lib/ZendExtensionManager_TS.so" >> $php.tmp
-		mv $php{.tmp,}
-	fi
-done
-
-# apache1
-if [ -f /etc/apache/conf.d/??_mod_php4.conf ] && [ -f /var/lock/subsys/apache ]; then
-	/etc/rc.d/init.d/apache restart 1>&2
+if [ "$1" = 1 ]; then
+%banner -e %{name} <<EOF
+Remember to read %{_docdir}/%{name}-%{version}/LICENSE.gz!
+EOF
 fi
-# apache2
-if [ -f /etc/httpd/httpd.conf/??_mod_php4.conf ] && [ -f /var/lock/subsys/httpd ]; then
-	/etc/rc.d/init.d/httpd restart 1>&2
-fi
-
-echo "Remember: Read the %{_docdir}/ZendOptimizer-%{version}/LICENSE.gz !"
 
 # TODO: trigger for removing [Zend] section from php.ini
 
@@ -170,9 +141,6 @@ echo "Remember: Read the %{_docdir}/ZendOptimizer-%{version}/LICENSE.gz !"
 %defattr(644,root,root,755)
 %doc data/doc LICENSE
 %attr(755,root,root) %{_bindir}/zendid
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/php/pack.ini
-%{_sysconfdir}/php/poweredbyoptimizer.gif
-
 %dir %{_libdir}/Zend
 %dir %{_libdir}/Zend/lib
 %dir %{_libdir}/Zend/lib/Optimizer-%{version}
@@ -188,8 +156,12 @@ echo "Remember: Read the %{_docdir}/ZendOptimizer-%{version}/LICENSE.gz !"
 
 %files -n php4-%{name}
 %defattr(644,root,root,755)
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/php4/pack.ini
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/php4/conf.d/*.ini
+%{_sysconfdir}/php4/poweredbyoptimizer.gif
 
 %files -n php-%{name}
 %defattr(644,root,root,755)
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/php/pack.ini
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/php/conf.d/*.ini
+%{_sysconfdir}/php/poweredbyoptimizer.gif
