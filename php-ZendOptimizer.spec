@@ -8,7 +8,7 @@ Summary:	Zend Optimizer - PHP code optimizer
 Summary(pl):	Zend Optimizer - optymalizator kodu PHP
 Name:		ZendOptimizer
 Version:	2.5.10a
-Release:	0.10
+Release:	0.11
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
 Group:		Libraries
 Source0:	http://downloads.zend.com/optimizer/2.5.10/%{name}-%{version}-linux-glibc21-i386.tar.gz
@@ -36,20 +36,20 @@ Zend Optimizer - PHP code optimizer.
 Zend Optimizer - optymalizator kodu PHP.
 
 %package -n php4-%{name}
-Summary:	php4
-Group:		php4
-PreReq:		ZendOptimizer = %{version}-%{release}
-Requires:	php >= 3:4.0.6
+Summary:	Zend Optimizer for PHP 4.x.
+Group:		Libraries
+Requires:	ZendOptimizer = %{version}-%{release}
+Requires:	php4 >= 3:4.0.6
 Provides:	ZendOptimizer(php)
 
 %description -n php4-%{name}
 Zend Optimizer for PHP 4.x.
 
 %package -n php-%{name}
-Summary:	php
-Group:		php
-PreReq:		ZendOptimizer = %{version}-%{release}
-Requires:	php >= 3:5.0.0
+Summary:	Zend Optimizer for PHP 5.x.
+Group:		Libraries
+Requires:	ZendOptimizer = %{version}-%{release}
+Requires:	php >= 4:5.0.0
 Provides:	ZendOptimizer(php)
 
 %description -n php-%{name}
@@ -68,8 +68,6 @@ Zend Optimizer for PHP 5.x.
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_libdir}/Zend/lib/Optimizer{,_TS}-%{version},%{_bindir},/etc/php{,4},}
-install -d $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer-%{version}/php-{4.0.6,4.1.x,4.2.0,4.2.x,4.3.x,4.4.x,5.0.x}
-install -d $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-{4.2.x,4.3.x,4.4.x,5.0.x}
 
 echo "zend_optimizer.version=%{version}" > $RPM_BUILD_ROOT/etc/php4/pack.ini
 echo "zend_optimizer.version=%{version}" > $RPM_BUILD_ROOT/etc/php/pack.ini
@@ -102,8 +100,8 @@ zend_extension_ts=%{_libdir}/Zend/lib/ZendExtensionManager_TS.so
 EOF
 
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/php{,4}/conf.d
-install zendoptimizer.ini $RPM_BUILD_ROOT%{_sysconfdir}/php4/conf.d/%{name}.ini
-install zendoptimizer.ini $RPM_BUILD_ROOT%{_sysconfdir}/php/conf.d/%{name}.ini
+install zendoptimizer.ini $RPM_BUILD_ROOT/etc/php4/conf.d/%{name}.ini
+install zendoptimizer.ini $RPM_BUILD_ROOT/etc/php/conf.d/%{name}.ini
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -156,12 +154,12 @@ fi
 
 %files -n php4-%{name}
 %defattr(644,root,root,755)
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/php4/pack.ini
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/php4/conf.d/*.ini
-%{_sysconfdir}/php4/poweredbyoptimizer.gif
+%config(noreplace) %verify(not md5 mtime size) /etc/php4/pack.ini
+%config(noreplace) %verify(not md5 mtime size) /etc/php4/conf.d/*.ini
+/etc/php4/poweredbyoptimizer.gif
 
 %files -n php-%{name}
 %defattr(644,root,root,755)
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/php/pack.ini
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/php/conf.d/*.ini
-%{_sysconfdir}/php/poweredbyoptimizer.gif
+%config(noreplace) %verify(not md5 mtime size) /etc/php/pack.ini
+%config(noreplace) %verify(not md5 mtime size) /etc/php/conf.d/*.ini
+/etc/php/poweredbyoptimizer.gif
