@@ -8,7 +8,7 @@ Summary:	Zend Optimizer - PHP code optimizer
 Summary(pl):	Zend Optimizer - optymalizator kodu PHP
 Name:		ZendOptimizer
 Version:	2.5.10a
-Release:	0.27
+Release:	0.29
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
 Group:		Libraries
 Source0:	http://downloads.zend.com/optimizer/2.5.10/%{name}-%{version}-linux-glibc21-i386.tar.gz
@@ -66,9 +66,6 @@ Zend Optimizer for PHP 5.x.
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_bindir},/etc/php4,/etc/php}
 
-echo "zend_optimizer.version=%{version}" > $RPM_BUILD_ROOT/etc/php4/pack.ini
-echo "zend_optimizer.version=%{version}" > $RPM_BUILD_ROOT/etc/php/pack.ini
-
 cd data
 for a in *_comp; do
 	d=$(basename $a _comp | tr _ .)
@@ -87,8 +84,16 @@ ln -s %{_sysconfdir}/php $RPM_BUILD_ROOT%{_libdir}/Zend/etc
 ln -s %{_bindir} $RPM_BUILD_ROOT%{_libdir}/Zend/bin
 
 cat <<'EOF' > zendoptimizer.ini
+; ZendOptimizer user settings.
 [Zend]
 zend_optimizer.optimization_level=15
+EOF
+
+cat <<'EOF' > pack.ini
+; ZendOptimizer package settings. Overwritten which each upgrade.
+; if you need to add options, edit %{name}.ini instead
+[Zend]
+zend_optimizer.version=%{version}
 zend_extension_manager.optimizer=%{_libdir}/Zend/lib/Optimizer-%{version}
 zend_extension_manager.optimizer_ts=%{_libdir}/Zend/lib/Optimizer_TS-%{version}
 zend_extension=%{_libdir}/Zend/lib/ZendExtensionManager.so
@@ -98,6 +103,8 @@ EOF
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/php{,4}/conf.d
 install zendoptimizer.ini $RPM_BUILD_ROOT/etc/php4/conf.d/%{name}.ini
 install zendoptimizer.ini $RPM_BUILD_ROOT/etc/php/conf.d/%{name}.ini
+install pack.ini $RPM_BUILD_ROOT/etc/php4/conf.d/%{name}_pack.ini
+install pack.ini $RPM_BUILD_ROOT/etc/php/conf.d/%{name}_pack.ini
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -143,7 +150,7 @@ fi
 %triggerpostun -n php4-%{name} -- %{name} < 2.5.10a-0.20
 if [ -f /etc/php4/php.ini ]; then
 	cp -f /etc/php4/conf.d/ZendOptimizer.ini{,.rpmnew}
-	sed -ne '/^\(zend_\|\[Zend\]\)/p' /etc/php4/php.ini > /etc/php4/conf.d/ZendOptimizer.ini
+	sed -ne '/^\(zend_\|\[Zend\]\)/{/^zend_extension\(_manager\.optimizer\)\?\(_ts\)\?=/d;p}' /etc/php4/php.ini > /etc/php4/conf.d/ZendOptimizer.ini
 	cp -f /etc/php4/php.ini{,.rpmsave}
 	sed -i -e '/^\(zend_\|\[Zend\]\)/d' /etc/php4/php.ini
 fi
@@ -151,7 +158,7 @@ fi
 %triggerpostun -- %{name} < 2.5.10a-0.20
 if [ -f /etc/php/php.ini ]; then
 	cp -f /etc/php/conf.d/ZendOptimizer.ini{,.rpmnew}
-	sed -ne '/^\(zend_\|\[Zend\]\)/p' /etc/php/php.ini > /etc/php/conf.d/ZendOptimizer.ini
+	sed -ne '/^\(zend_\|\[Zend\]\)/{/^zend_extension\(_manager\.optimizer\)\?\(_ts\)\?=/d;p}' /etc/php/php.ini > /etc/php/conf.d/ZendOptimizer.ini
 	cp -f /etc/php/php.ini{,.rpmsave}
 	sed -i -e '/^\(zend_\|\[Zend\]\)/d' /etc/php/php.ini
 fi
@@ -175,12 +182,12 @@ fi
 
 %files -n php4-%{name}
 %defattr(644,root,root,755)
-%config(noreplace) %verify(not md5 mtime size) /etc/php4/pack.ini
-%config(noreplace) %verify(not md5 mtime size) /etc/php4/conf.d/*.ini
+%config(noreplace) %verify(not md5 mtime size) /etc/php4/conf.d/%{name}.ini
+%config %verify(not md5 mtime size) /etc/php4/conf.d/%{name}_pack.ini
 /etc/php4/poweredbyoptimizer.gif
 
 %files -n php-%{name}
 %defattr(644,root,root,755)
-%config(noreplace) %verify(not md5 mtime size) /etc/php/pack.ini
-%config(noreplace) %verify(not md5 mtime size) /etc/php/conf.d/*.ini
+%config(noreplace) %verify(not md5 mtime size) /etc/php/conf.d/%{name}.ini
+%config %verify(not md5 mtime size) /etc/php/conf.d/%{name}_pack.ini
 /etc/php/poweredbyoptimizer.gif
