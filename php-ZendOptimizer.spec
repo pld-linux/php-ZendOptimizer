@@ -8,7 +8,7 @@ Summary:	Zend Optimizer - PHP code optimizer
 Summary(pl):	Zend Optimizer - optymalizator kodu PHP
 Name:		ZendOptimizer
 Version:	2.5.10a
-Release:	0.17
+Release:	0.26
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
 Group:		Libraries
 Source0:	http://downloads.zend.com/optimizer/2.5.10/%{name}-%{version}-linux-glibc21-i386.tar.gz
@@ -22,6 +22,7 @@ BuildRequires:	tar >= 1:1.15.1
 # ones that want to install specific for specific version need not to
 # install ZendOptimizer separately
 Requires:	%{name}(php) = %{version}-%{release}
+Requires(triggerpostun):	sed >= 4.0
 ExclusiveArch:	%{ix86} %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -139,7 +140,21 @@ Remember to read %{_docdir}/%{name}-%{version}/LICENSE.gz!
 EOF
 fi
 
-# TODO: trigger for removing [Zend] section from php.ini
+%triggerpostun -n php4-%{name} -- %{name} < 2.5.10a-0.20
+if [ -f /etc/php4/php.ini ]; then
+	cp -f /etc/php4/conf.d/ZendOptimizer.ini{,.rpmnew}
+	sed -ne '/^\(zend_\|\[Zend\]\)/p' /etc/php4/php.ini > /etc/php4/conf.d/ZendOptimizer.ini
+	cp -f /etc/php4/php.ini{,.rpmsave}
+	sed -i -e '/^\(zend_\|\[Zend\]\)/d' /etc/php4/php.ini
+fi
+
+%triggerpostun -- %{name} < 2.5.10a-0.20
+if [ -f /etc/php/php.ini ]; then
+	cp -f /etc/php/conf.d/ZendOptimizer.ini{,.rpmnew}
+	sed -ne '/^\(zend_\|\[Zend\]\)/p' /etc/php/php.ini > /etc/php/conf.d/ZendOptimizer.ini
+	cp -f /etc/php/php.ini{,.rpmsave}
+	sed -i -e '/^\(zend_\|\[Zend\]\)/d' /etc/php/php.ini
+fi
 
 %files
 %defattr(644,root,root,755)
