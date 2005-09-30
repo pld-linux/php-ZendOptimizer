@@ -8,7 +8,7 @@ Summary:	Zend Optimizer - PHP code optimizer
 Summary(pl):	Zend Optimizer - optymalizator kodu PHP
 Name:		ZendOptimizer
 Version:	2.5.10a
-Release:	0.14
+Release:	0.17
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
 Group:		Libraries
 Source0:	http://downloads.zend.com/optimizer/2.5.10/%{name}-%{version}-linux-glibc21-i386.tar.gz
@@ -108,8 +108,14 @@ if [ "$1" = "0" ]; then
 fi
 
 %post -n php4-%{name}
+# let /usr/lib/Zend/etc point to php's config dir. php which installed first wins.
+# not sure how critical is existence of this etc link at all.
+if [ ! -L %{_libdir}/Zend/etc ]; then
+	ln -snf /etc/php4 %{_libdir}/Zend/etc
+fi
 [ ! -f /etc/apache/conf.d/??_mod_php4.conf ] || %service -q apache restart
 [ ! -f /etc/httpd/httpd.conf/??_mod_php4.conf ] || %service -q httpd restart
+
 
 %preun -n php-%{name}
 if [ "$1" = "0" ]; then
@@ -118,6 +124,11 @@ if [ "$1" = "0" ]; then
 fi
 
 %post -n php-%{name}
+# let /usr/lib/Zend/etc point to php's config dir. php which installed first wins.
+# not sure how critical is existence of this etc link at all.
+if [ ! -L %{_libdir}/Zend/etc ]; then
+	ln -snf /etc/php %{_libdir}/Zend/etc
+fi
 [ ! -f /etc/apache/conf.d/??_mod_php.conf ] || %service -q apache restart
 [ ! -f /etc/httpd/httpd.conf/??_mod_php.conf ] || %service -q httpd restart
 
@@ -132,7 +143,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc data/doc LICENSE
+%doc data/doc/* LICENSE
 %attr(755,root,root) %{_bindir}/zendid
 %dir %{_libdir}/Zend
 %dir %{_libdir}/Zend/lib
@@ -145,7 +156,7 @@ fi
 %attr(755,root,root) %{_libdir}/Zend/lib/ZendExtensionManager.so
 %attr(755,root,root) %{_libdir}/Zend/lib/ZendExtensionManager_TS.so
 %{_libdir}/Zend/bin
-%{_libdir}/Zend/etc
+%ghost %{_libdir}/Zend/etc
 
 %files -n php4-%{name}
 %defattr(644,root,root,755)
