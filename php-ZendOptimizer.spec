@@ -8,7 +8,7 @@ Summary:	Zend Optimizer - PHP code optimizer
 Summary(pl):	Zend Optimizer - optymalizator kodu PHP
 Name:		ZendOptimizer
 Version:	2.5.10a
-Release:	0.11
+Release:	0.13
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
 Group:		Libraries
 Source0:	http://downloads.zend.com/optimizer/2.5.10/%{name}-%{version}-linux-glibc21-i386.tar.gz
@@ -25,7 +25,7 @@ Requires(post):	sed >= 4.0.0
 # circular dependency, so ones upgraded are forced to choose php and
 # ones that want to install specific for specific version need not to
 # install ZendOptimizer separately
-Requires:	ZendOptimizer(php)
+Requires:	%{name}(php) = %{version}-%{release}
 ExclusiveArch:	%{ix86} %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -38,9 +38,9 @@ Zend Optimizer - optymalizator kodu PHP.
 %package -n php4-%{name}
 Summary:	Zend Optimizer for PHP 4.x.
 Group:		Libraries
-Requires:	ZendOptimizer = %{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 Requires:	php4 >= 3:4.0.6
-Provides:	ZendOptimizer(php)
+Provides:	%{name}(php) = %{version}-%{release}
 
 %description -n php4-%{name}
 Zend Optimizer for PHP 4.x.
@@ -48,9 +48,9 @@ Zend Optimizer for PHP 4.x.
 %package -n php-%{name}
 Summary:	Zend Optimizer for PHP 5.x.
 Group:		Libraries
-Requires:	ZendOptimizer = %{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 Requires:	php >= 4:5.0.0
-Provides:	ZendOptimizer(php)
+Provides:	%{name}(php) = %{version}-%{release}
 
 %description -n php-%{name}
 Zend Optimizer for PHP 5.x.
@@ -67,17 +67,12 @@ Zend Optimizer for PHP 5.x.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_libdir}/Zend/lib/Optimizer{,_TS}-%{version},%{_bindir},/etc/php{,4},}
+install -d $RPM_BUILD_ROOT{%{_bindir},/etc/php4,/etc/php}
 
 echo "zend_optimizer.version=%{version}" > $RPM_BUILD_ROOT/etc/php4/pack.ini
 echo "zend_optimizer.version=%{version}" > $RPM_BUILD_ROOT/etc/php/pack.ini
 
 cd data
-install zendid $RPM_BUILD_ROOT%{_bindir}
-install poweredbyoptimizer.gif $RPM_BUILD_ROOT%{_sysconfdir}/php
-install poweredbyoptimizer.gif $RPM_BUILD_ROOT%{_sysconfdir}/php4
-install *.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib
-
 for a in *_comp; do
 	d=$(basename $a _comp | tr _ .)
 	install -D $a/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer-%{version}/php-$d/ZendOptimizer.so
@@ -87,6 +82,10 @@ for a in *_comp/TS; do
 	install -D $a/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-$d/ZendOptimizer.so
 done
 
+install zendid $RPM_BUILD_ROOT%{_bindir}
+install poweredbyoptimizer.gif $RPM_BUILD_ROOT%{_sysconfdir}/php
+install poweredbyoptimizer.gif $RPM_BUILD_ROOT%{_sysconfdir}/php4
+install *.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib
 ln -s %{_sysconfdir}/php $RPM_BUILD_ROOT%{_libdir}/Zend/etc
 ln -s %{_bindir} $RPM_BUILD_ROOT%{_libdir}/Zend/bin
 
