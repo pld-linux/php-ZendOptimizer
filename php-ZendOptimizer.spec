@@ -18,8 +18,6 @@ Source1:	http://downloads.zend.com/optimizer/2.5.10/%{name}-%{version}-linux-gli
 URL:		http://www.zend.com/zend/optimizer.php
 BuildRequires:	rpmbuild(macros) >= 1.213
 BuildRequires:	tar >= 1:1.15.1
-Requires(post):	grep >= 2:2.5.1
-Requires(post):	sed >= 4.0.0
 # circular dependency, so ones upgraded are forced to choose php and
 # ones that want to install specific for specific version need not to
 # install ZendOptimizer separately
