@@ -8,7 +8,7 @@ Summary:	Zend Optimizer - PHP code optimizer
 Summary(pl):	Zend Optimizer - optymalizator kodu PHP
 Name:		ZendOptimizer
 Version:	2.5.10a
-Release:	0.29
+Release:	0.30
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
 Group:		Libraries
 Source0:	http://downloads.zend.com/optimizer/2.5.10/%{name}-%{version}-linux-glibc21-i386.tar.gz
@@ -90,7 +90,7 @@ zend_optimizer.optimization_level=15
 EOF
 
 cat <<'EOF' > pack.ini
-; ZendOptimizer package settings. Overwritten which each upgrade.
+; ZendOptimizer package settings. Overwritten with each upgrade.
 ; if you need to add options, edit %{name}.ini instead
 [Zend]
 zend_optimizer.version=%{version}
