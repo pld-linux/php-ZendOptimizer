@@ -33,7 +33,8 @@ Zend Optimizer - PHP code optimizer.
 Zend Optimizer - optymalizator kodu PHP.
 
 %package -n php4-%{name}
-Summary:	Zend Optimizer for PHP 4.x.
+Summary:	Zend Optimizer for PHP 4.x
+Summary(pl):	Zend Optimizer dla PHP 4.x
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	php4-common >= 3:4.0.6
@@ -42,8 +43,12 @@ Provides:	%{name}(php) = %{version}-%{release}
 %description -n php4-%{name}
 Zend Optimizer for PHP 4.x.
 
+%description -n php4-%{name} -l pl
+Zend Optimizer dla PHP 4.x.
+
 %package -n php-%{name}
-Summary:	Zend Optimizer for PHP 5.x.
+Summary:	Zend Optimizer for PHP 5.x
+Summary(pl):	Zend Optimizer dla PHP 5.x
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	php-common >= 4:5.0.0
@@ -51,6 +56,9 @@ Provides:	%{name}(php) = %{version}-%{release}
 
 %description -n php-%{name}
 Zend Optimizer for PHP 5.x.
+
+%description -n php-%{name} -l pl
+Zend Optimizer dla PHP 5.x.
 
 %prep
 %setup -q -c
