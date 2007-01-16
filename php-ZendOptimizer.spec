@@ -16,7 +16,7 @@ Source0:	http://downloads.zend.com/optimizer/2.6.2/%{name}-%{version}-linux-glib
 Source1:	http://downloads.zend.com/optimizer/2.6.2/%{name}-%{version}-linux-glibc23-x86_64.tar.gz
 # Source1-md5:	7d7aaee366ff653e78beb457701197c5
 URL:		http://www.zend.com/zend/optimizer.php
-BuildRequires:	rpmbuild(macros) >= 1.213
+BuildRequires:	rpmbuild(macros) >= 1.344
 BuildRequires:	tar >= 1:1.15.1
 Requires(triggerpostun):	sed >= 4.0
 ExclusiveArch:	%{ix86} %{x8664}
@@ -33,7 +33,7 @@ Summary:	Zend Optimizer for PHP 4.x
 Summary(pl):	Zend Optimizer dla PHP 4.x
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	php4-common >= 3:4.0.6
+Requires:	php4-common >= 3:4.4.0-3
 
 %description -n php4-%{name}
 Zend Optimizer for PHP 4.x.
@@ -46,7 +46,7 @@ Summary:	Zend Optimizer for PHP 5.x
 Summary(pl):	Zend Optimizer dla PHP 5.x
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	php-common >= 4:5.0.0
+Requires:	php-common >= 4:5.0.4
 
 %description -n php-%{name}
 Zend Optimizer for PHP 5.x.
@@ -113,8 +113,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %preun -n php4-%{name}
 if [ "$1" = "0" ]; then
-	[ ! -f /etc/apache/conf.d/??_mod_php4.conf ] || %service -q apache restart
-	[ ! -f /etc/httpd/httpd.conf/??_mod_php4.conf ] || %service -q httpd restart
+	%php4_webserver_restart
 fi
 
 %post -n php4-%{name}
@@ -123,14 +122,11 @@ fi
 if [ ! -L %{_libdir}/Zend/etc ]; then
 	ln -snf /etc/php4 %{_libdir}/Zend/etc
 fi
-[ ! -f /etc/apache/conf.d/??_mod_php4.conf ] || %service -q apache restart
-[ ! -f /etc/httpd/httpd.conf/??_mod_php4.conf ] || %service -q httpd restart
-
+%php4_webserver_restart
 
 %preun -n php-%{name}
 if [ "$1" = "0" ]; then
-	[ ! -f /etc/apache/conf.d/??_mod_php.conf ] || %service -q apache restart
-	[ ! -f /etc/httpd/httpd.conf/??_mod_php.conf ] || %service -q httpd restart
+	%php_webserver_restart
 fi
 
 %post -n php-%{name}
@@ -139,8 +135,7 @@ fi
 if [ ! -L %{_libdir}/Zend/etc ]; then
 	ln -snf /etc/php %{_libdir}/Zend/etc
 fi
-[ ! -f /etc/apache/conf.d/??_mod_php.conf ] || %service -q apache restart
-[ ! -f /etc/httpd/httpd.conf/??_mod_php.conf ] || %service -q httpd restart
+%php_webserver_restart
 
 %post
 if [ "$1" = 1 ]; then
