@@ -5,7 +5,7 @@
 %define		no_install_post_compress_docs	1
 %define		no_install_post_chrpath		1
 Summary:	Zend Optimizer - PHP code optimizer
-Summary(pl.UTF-8):   Zend Optimizer - optymalizator kodu PHP
+Summary(pl.UTF-8):	Zend Optimizer - optymalizator kodu PHP
 Name:		ZendOptimizer
 Version:	3.2.2
 Release:	1
@@ -30,7 +30,7 @@ Zend Optimizer - optymalizator kodu PHP.
 
 %package -n php4-%{name}
 Summary:	Zend Optimizer for PHP 4.x
-Summary(pl.UTF-8):   Zend Optimizer dla PHP 4.x
+Summary(pl.UTF-8):	Zend Optimizer dla PHP 4.x
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	php4-common >= 3:4.4.0-3
@@ -43,7 +43,7 @@ Zend Optimizer dla PHP 4.x.
 
 %package -n php-%{name}
 Summary:	Zend Optimizer for PHP 5.x
-Summary(pl.UTF-8):   Zend Optimizer dla PHP 5.x
+Summary(pl.UTF-8):	Zend Optimizer dla PHP 5.x
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	php-common >= 4:5.0.4
