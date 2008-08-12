@@ -7,14 +7,14 @@
 Summary:	Zend Optimizer - PHP code optimizer
 Summary(pl.UTF-8):	Zend Optimizer - optymalizator kodu PHP
 Name:		ZendOptimizer
-Version:	3.2.2
+Version:	3.3.3
 Release:	1
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
 Group:		Libraries
-Source0:	http://downloads.zend.com/optimizer/3.2.2/%{name}-%{version}-linux-glibc21-i386.tar.gz
-# Source0-md5:	05bf2c306a8e16c1430d691f83f1054a
-Source1:	http://downloads.zend.com/optimizer/3.2.2/%{name}-%{version}-linux-glibc23-x86_64.tar.gz
-# Source1-md5:	0e3a0901f6e9ef2a549100db2531c7fa
+Source0:	http://downloads.zend.com/optimizer/3.3.3/%{name}-%{version}-linux-glibc23-i386.tar.gz
+# Source0-md5:	38a3c83ca79534377b90b246c0f49d01
+Source1:	http://downloads.zend.com/optimizer/3.3.3/%{name}-%{version}-linux-glibc23-x86_64.tar.gz
+# Source1-md5:	0e268aee33fe56d61f02699a4c54df20
 URL:		http://www.zend.com/products/zend_optimizer
 BuildRequires:	rpmbuild(macros) >= 1.344
 BuildRequires:	tar >= 1:1.15.1
