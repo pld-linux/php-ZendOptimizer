@@ -8,7 +8,7 @@ Summary:	Zend Optimizer - PHP code optimizer
 Summary(pl.UTF-8):	Zend Optimizer - optymalizator kodu PHP
 Name:		ZendOptimizer
 Version:	3.3.3
-Release:	2
+Release:	3
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
 Group:		Libraries
 Source0:	http://downloads.zend.com/optimizer/3.3.3/%{name}-%{version}-linux-glibc23-i386.tar.gz
@@ -179,12 +179,12 @@ fi
 
 %files -n php4-%{name}
 %defattr(644,root,root,755)
-%config(noreplace) %verify(not md5 mtime size) /etc/php4/conf.d/%{name}.ini
-%config %verify(not md5 mtime size) /etc/php4/conf.d/%{name}_pack.ini
+%config(noreplace) %verify(not md5 mtime size) /etc/php4/conf.d/zendoptimizer.ini
+%config %verify(not md5 mtime size) /etc/php4/conf.d/zendoptimizer_pack.ini
 /etc/php4/poweredbyoptimizer.gif
 
 %files -n php-%{name}
 %defattr(644,root,root,755)
-%config(noreplace) %verify(not md5 mtime size) /etc/php/conf.d/%{name}.ini
-%config %verify(not md5 mtime size) /etc/php/conf.d/%{name}_pack.ini
+%config(noreplace) %verify(not md5 mtime size) /etc/php/conf.d/zendoptimizer.ini
+%config %verify(not md5 mtime size) /etc/php/conf.d/zendoptimizer_pack.ini
 /etc/php/poweredbyoptimizer.gif
