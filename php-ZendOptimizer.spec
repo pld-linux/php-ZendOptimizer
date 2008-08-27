@@ -8,7 +8,7 @@ Summary:	Zend Optimizer - PHP code optimizer
 Summary(pl.UTF-8):	Zend Optimizer - optymalizator kodu PHP
 Name:		ZendOptimizer
 Version:	3.3.3
-Release:	1
+Release:	2
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
 Group:		Libraries
 Source0:	http://downloads.zend.com/optimizer/3.3.3/%{name}-%{version}-linux-glibc23-i386.tar.gz
@@ -103,10 +103,10 @@ zend_extension_ts=%{_libdir}/Zend/lib/ZendExtensionManager_TS.so
 EOF
 
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/php{,4}/conf.d
-install zendoptimizer.ini $RPM_BUILD_ROOT/etc/php4/conf.d/%{name}.ini
-install zendoptimizer.ini $RPM_BUILD_ROOT/etc/php/conf.d/%{name}.ini
-install pack.ini $RPM_BUILD_ROOT/etc/php4/conf.d/%{name}_pack.ini
-install pack.ini $RPM_BUILD_ROOT/etc/php/conf.d/%{name}_pack.ini
+install zendoptimizer.ini $RPM_BUILD_ROOT/etc/php4/conf.d/zendoptimizer.ini
+install zendoptimizer.ini $RPM_BUILD_ROOT/etc/php/conf.d/zendoptimizer.ini
+install pack.ini $RPM_BUILD_ROOT/etc/php4/conf.d/zendoptimizer_pack.ini
+install pack.ini $RPM_BUILD_ROOT/etc/php/conf.d/zendoptimizer_pack.ini
 
 %clean
 rm -rf $RPM_BUILD_ROOT
