@@ -64,6 +64,23 @@ Zend Optimizer dla PHP 5.x.
 %{__tar} --strip-components=1 -zxf %{SOURCE1}
 %endif
 
+cat <<'EOF' > data/zendoptimizer.ini
+; ZendOptimizer user settings.
+[Zend]
+zend_optimizer.optimization_level=15
+EOF
+
+cat <<'EOF' > data/pack.ini
+; ZendOptimizer package settings. Overwritten with each upgrade.
+; if you need to add options, edit %{name}.ini instead
+[Zend]
+zend_optimizer.version=%{version}
+zend_extension_manager.optimizer=%{_libdir}/Zend/lib/Optimizer-%{version}
+zend_extension_manager.optimizer_ts=%{_libdir}/Zend/lib/Optimizer_TS-%{version}
+zend_extension=%{_libdir}/Zend/lib/ZendExtensionManager.so
+zend_extension_ts=%{_libdir}/Zend/lib/ZendExtensionManager_TS.so
+EOF
+
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_bindir},/etc/php4,/etc/php}
@@ -84,23 +101,6 @@ install poweredbyoptimizer.gif $RPM_BUILD_ROOT%{_sysconfdir}/php4
 install *.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib
 ln -s %{_sysconfdir}/php $RPM_BUILD_ROOT%{_libdir}/Zend/etc
 ln -s %{_bindir} $RPM_BUILD_ROOT%{_libdir}/Zend/bin
-
-cat <<'EOF' > zendoptimizer.ini
-; ZendOptimizer user settings.
-[Zend]
-zend_optimizer.optimization_level=15
-EOF
-
-cat <<'EOF' > pack.ini
-; ZendOptimizer package settings. Overwritten with each upgrade.
-; if you need to add options, edit %{name}.ini instead
-[Zend]
-zend_optimizer.version=%{version}
-zend_extension_manager.optimizer=%{_libdir}/Zend/lib/Optimizer-%{version}
-zend_extension_manager.optimizer_ts=%{_libdir}/Zend/lib/Optimizer_TS-%{version}
-zend_extension=%{_libdir}/Zend/lib/ZendExtensionManager.so
-zend_extension_ts=%{_libdir}/Zend/lib/ZendExtensionManager_TS.so
-EOF
 
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/php{,4}/conf.d
 install zendoptimizer.ini $RPM_BUILD_ROOT/etc/php4/conf.d/zendoptimizer.ini
