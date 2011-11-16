@@ -7,14 +7,14 @@
 Summary:	Zend Optimizer - PHP code optimizer
 Summary(pl.UTF-8):	Zend Optimizer - optymalizator kodu PHP
 Name:		ZendOptimizer
-Version:	3.3.3
-Release:	5
+Version:	3.3.9
+Release:	1
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
 Group:		Libraries
-Source0:	http://downloads.zend.com/optimizer/3.3.3/%{name}-%{version}-linux-glibc23-i386.tar.gz
-# Source0-md5:	38a3c83ca79534377b90b246c0f49d01
-Source1:	http://downloads.zend.com/optimizer/3.3.3/%{name}-%{version}-linux-glibc23-x86_64.tar.gz
-# Source1-md5:	0e268aee33fe56d61f02699a4c54df20
+Source0:	http://downloads.zend.com/optimizer/3.3.9/%{name}-%{version}-linux-glibc23-i386.tar.gz
+# Source0-md5:	150586c3af37fbdfa504cf142c447e57
+Source1:	http://downloads.zend.com/optimizer/3.3.9/%{name}-%{version}-linux-glibc23-x86_64.tar.gz
+# Source1-md5:	dd4a95e66f0bda61d0006195b2f42efa
 URL:		http://www.zend.com/products/zend_optimizer
 BuildRequires:	rpmbuild(macros) >= 1.344
 BuildRequires:	tar >= 1:1.15.1
@@ -28,24 +28,10 @@ Zend Optimizer - PHP code optimizer.
 %description -l pl.UTF-8
 Zend Optimizer - optymalizator kodu PHP.
 
-%package -n php4-%{name}
-Summary:	Zend Optimizer for PHP 4.x
-Summary(pl.UTF-8):	Zend Optimizer dla PHP 4.x
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-Requires:	php4-common >= 3:4.4.0-3
-
-%description -n php4-%{name}
-Zend Optimizer for PHP 4.x.
-
-%description -n php4-%{name} -l pl.UTF-8
-Zend Optimizer dla PHP 4.x.
-
 %package -n php-%{name}
 Summary:	Zend Optimizer for PHP 5.x
 Summary(pl.UTF-8):	Zend Optimizer dla PHP 5.x
 Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
 Requires:	php-common >= 4:5.0.4
 
 %description -n php-%{name}
@@ -74,55 +60,24 @@ cat <<'EOF' > data/pack.ini
 ; ZendOptimizer package settings. Overwritten with each upgrade.
 ; if you need to add options, edit %{name}.ini instead
 [Zend]
-zend_optimizer.version=%{version}
-zend_extension_manager.optimizer=%{_libdir}/Zend/lib/Optimizer-%{version}
-zend_extension_manager.optimizer_ts=%{_libdir}/Zend/lib/Optimizer_TS-%{version}
-zend_extension=%{_libdir}/Zend/lib/ZendExtensionManager.so
-zend_extension_ts=%{_libdir}/Zend/lib/ZendExtensionManager_TS.so
+zend_extension=%{_libdir}/Zend/ZendOptimizer.so
 EOF
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_bindir},/etc/php4,/etc/php}
+install -d $RPM_BUILD_ROOT/etc/php
 
-cd data
-for a in *_comp; do
-	d=$(basename $a _comp | tr _ .)
-	install -D $a/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer-%{version}/php-$d/ZendOptimizer.so
-done
-for a in *_comp/TS; do
-	d=$(basename $(dirname $a) _comp | tr _ .)
-	install -D $a/ZendOptimizer.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-$d/ZendOptimizer.so
-done
+install -D data/%{php_major_version}_%{php_minor_version}_x_comp/ZendOptimizer.so \
+	 $RPM_BUILD_ROOT%{_libdir}/Zend/ZendOptimizer.so
 
-install zendid $RPM_BUILD_ROOT%{_bindir}
-install poweredbyoptimizer.gif $RPM_BUILD_ROOT%{_sysconfdir}/php
-install poweredbyoptimizer.gif $RPM_BUILD_ROOT%{_sysconfdir}/php4
-install *.so $RPM_BUILD_ROOT%{_libdir}/Zend/lib
-ln -s %{_sysconfdir}/php $RPM_BUILD_ROOT%{_libdir}/Zend/etc
-ln -s %{_bindir} $RPM_BUILD_ROOT%{_libdir}/Zend/bin
+install data/poweredbyoptimizer.gif $RPM_BUILD_ROOT%{_sysconfdir}/php
 
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/php{,4}/conf.d
-install zendoptimizer.ini $RPM_BUILD_ROOT/etc/php4/conf.d/zendoptimizer.ini
-install zendoptimizer.ini $RPM_BUILD_ROOT/etc/php/conf.d/zendoptimizer.ini
-install pack.ini $RPM_BUILD_ROOT/etc/php4/conf.d/zendoptimizer_pack.ini
-install pack.ini $RPM_BUILD_ROOT/etc/php/conf.d/zendoptimizer_pack.ini
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/php/conf.d
+install data/zendoptimizer.ini $RPM_BUILD_ROOT/etc/php/conf.d/zendoptimizer.ini
+install data/pack.ini $RPM_BUILD_ROOT/etc/php/conf.d/zendoptimizer_pack.ini
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
-%preun -n php4-%{name}
-if [ "$1" = "0" ]; then
-	%php4_webserver_restart
-fi
-
-%post -n php4-%{name}
-# let /usr/lib/Zend/etc point to php's config dir. php which installed first wins.
-# not sure how critical is existence of this etc link at all.
-if [ ! -L %{_libdir}/Zend/etc ]; then
-	ln -snf /etc/php4 %{_libdir}/Zend/etc
-fi
-%php4_webserver_restart
 
 %preun -n php-%{name}
 if [ "$1" = "0" ]; then
@@ -144,14 +99,6 @@ Remember to read %{_docdir}/%{name}-%{version}/LICENSE.gz!
 EOF
 fi
 
-%triggerpostun -n php4-%{name} -- %{name} < 2.5.10a-0.20
-if [ -f /etc/php4/php.ini ]; then
-	cp -f /etc/php4/conf.d/ZendOptimizer.ini{,.rpmnew}
-	sed -ne '/^\(zend_\|\[Zend\]\)/{/^zend_extension\(_manager\.optimizer\)\?\(_ts\)\?=/d;p}' /etc/php4/php.ini > /etc/php4/conf.d/ZendOptimizer.ini
-	cp -f /etc/php4/php.ini{,.rpmsave}
-	sed -i -e '/^\(zend_\|\[Zend\]\)/d' /etc/php4/php.ini
-fi
-
 %triggerpostun -- %{name} < 2.5.10a-0.20
 if [ -f /etc/php/php.ini ]; then
 	cp -f /etc/php/conf.d/ZendOptimizer.ini{,.rpmnew}
@@ -160,31 +107,11 @@ if [ -f /etc/php/php.ini ]; then
 	sed -i -e '/^\(zend_\|\[Zend\]\)/d' /etc/php/php.ini
 fi
 
-%files
-%defattr(644,root,root,755)
-%doc data/doc/* LICENSE
-%attr(755,root,root) %{_bindir}/zendid
-%dir %{_libdir}/Zend
-%dir %{_libdir}/Zend/lib
-%dir %{_libdir}/Zend/lib/Optimizer-%{version}
-%dir %{_libdir}/Zend/lib/Optimizer-%{version}/php-*
-%dir %{_libdir}/Zend/lib/Optimizer_TS-%{version}
-%dir %{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-*
-%attr(755,root,root) %{_libdir}/Zend/lib/Optimizer-%{version}/php-*/ZendOptimizer.so
-%attr(755,root,root) %{_libdir}/Zend/lib/Optimizer_TS-%{version}/php-*/ZendOptimizer.so
-%attr(755,root,root) %{_libdir}/Zend/lib/ZendExtensionManager.so
-%attr(755,root,root) %{_libdir}/Zend/lib/ZendExtensionManager_TS.so
-%{_libdir}/Zend/bin
-%ghost %{_libdir}/Zend/etc
-
-%files -n php4-%{name}
-%defattr(644,root,root,755)
-%config(noreplace) %verify(not md5 mtime size) /etc/php4/conf.d/zendoptimizer.ini
-%config %verify(not md5 mtime size) /etc/php4/conf.d/zendoptimizer_pack.ini
-/etc/php4/poweredbyoptimizer.gif
-
 %files -n php-%{name}
 %defattr(644,root,root,755)
+%doc README* EULA* LICENSE
+%dir %{_libdir}/Zend
+%attr(755,root,root) %{_libdir}/Zend/ZendOptimizer.so
 %config(noreplace) %verify(not md5 mtime size) /etc/php/conf.d/zendoptimizer.ini
 %config %verify(not md5 mtime size) /etc/php/conf.d/zendoptimizer_pack.ini
 /etc/php/poweredbyoptimizer.gif
