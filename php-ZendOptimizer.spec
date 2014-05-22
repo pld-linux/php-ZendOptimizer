@@ -4,9 +4,10 @@
 %define		no_install_post_strip		1
 %define		no_install_post_compress_docs	1
 %define		no_install_post_chrpath		1
+%define		php_name	php%{?php_suffix}
 Summary:	Zend Optimizer - PHP code optimizer
 Summary(pl.UTF-8):	Zend Optimizer - optymalizator kodu PHP
-Name:		php%{?php_suffix}-ZendOptimizer
+Name:		%{php_name}-ZendOptimizer
 Version:	3.3.9
 Release:	1
 License:	Zend License, distributable only if unmodified and for free (see LICENSE)
@@ -16,10 +17,9 @@ Source0:	http://downloads.zend.com/optimizer/3.3.9/ZendOptimizer-%{version}-linu
 Source1:	http://downloads.zend.com/optimizer/3.3.9/ZendOptimizer-%{version}-linux-glibc23-x86_64.tar.gz
 # Source1-md5:	dd4a95e66f0bda61d0006195b2f42efa
 URL:		http://www.zend.com/products/zend_optimizer
-BuildRequires:	rpmbuild(macros) >= 1.344
+BuildRequires:	rpmbuild(macros) >= 1.666
 BuildRequires:	tar >= 1:1.15.1
-Requires(triggerpostun):	sed >= 4.0
-Requires:	php%{?php_suffix}-common >= 4:5.0.4
+%{?requires_php_extension}
 Obsoletes:	ZendOptimizer
 ExclusiveArch:	%{ix86} %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -31,8 +31,7 @@ Zend Optimizer - PHP code optimizer.
 Zend Optimizer - optymalizator kodu PHP.
 
 %prep
-%setup -q -c
-
+%setup -qc
 %ifarch %{ix86}
 %{__tar} --strip-components=1 -zxf %{SOURCE0}
 %endif
@@ -55,16 +54,13 @@ EOF
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/etc/php%{?php_suffix}
-
-install -D data/%{php_major_version}_%{php_minor_version}_x_comp/ZendOptimizer.so \
+install -Dp data/%{php_major_version}_%{php_minor_version}_x_comp/ZendOptimizer.so \
 	 $RPM_BUILD_ROOT%{_libdir}/Zend/ZendOptimizer.so
 
-install data/poweredbyoptimizer.gif $RPM_BUILD_ROOT%{_sysconfdir}/php%{?php_suffix}
-
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/php%{?php_suffix}/conf.d
-install data/zendoptimizer.ini $RPM_BUILD_ROOT/etc/php%{?php_suffix}/conf.d/zendoptimizer.ini
-install data/pack.ini $RPM_BUILD_ROOT/etc/php%{?php_suffix}/conf.d/zendoptimizer_pack.ini
+install -d $RPM_BUILD_ROOT%{php_sysconfdir}/conf.d
+cp -p data/poweredbyoptimizer.gif $RPM_BUILD_ROOT%{php_sysconfdir}
+cp -p data/zendoptimizer.ini $RPM_BUILD_ROOT%{php_sysconfdir}/conf.d/zendoptimizer.ini
+cp -p data/pack.ini $RPM_BUILD_ROOT%{php_sysconfdir}/conf.d/zendoptimizer_pack.ini
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -82,19 +78,11 @@ Remember to read %{_docdir}/%{name}-%{version}/LICENSE.gz!
 EOF
 fi
 
-%triggerpostun -- %{name} < 2.5.10a-0.20
-if [ -f /etc/php%{?php_suffix}/php.ini ]; then
-	cp -f /etc/php%{?php_suffix}/conf.d/ZendOptimizer.ini{,.rpmnew}
-	sed -ne '/^\(zend_\|\[Zend\]\)/{/^zend_extension\(_manager\.optimizer\)\?\(_ts\)\?=/d;p}' /etc/php%{?php_suffix}/php.ini > /etc/php%{?php_suffix}/conf.d/ZendOptimizer.ini
-	cp -f /etc/php%{?php_suffix}/php.ini{,.rpmsave}
-	sed -i -e '/^\(zend_\|\[Zend\]\)/d' /etc/php%{?php_suffix}/php.ini
-fi
-
 %files
 %defattr(644,root,root,755)
 %doc README* EULA* LICENSE
 %dir %{_libdir}/Zend
 %attr(755,root,root) %{_libdir}/Zend/ZendOptimizer.so
-%config(noreplace) %verify(not md5 mtime size) /etc/php%{?php_suffix}/conf.d/zendoptimizer.ini
-%config %verify(not md5 mtime size) /etc/php%{?php_suffix}/conf.d/zendoptimizer_pack.ini
-/etc/php%{?php_suffix}/poweredbyoptimizer.gif
+%config(noreplace) %verify(not md5 mtime size) %{php_sysconfdir}/conf.d/zendoptimizer.ini
+%config(noreplace) %verify(not md5 mtime size) %{php_sysconfdir}/conf.d/zendoptimizer_pack.ini
+%{php_sysconfdir}/poweredbyoptimizer.gif
